@@ -1,0 +1,10 @@
+Package: forestr
+Title: Functions for forest modeling
+Version: 0.0.0.9000
+Authors@R: person("Italo", "Cegatta", email = "icegatta@suzano.com.br", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends: R (>= 3.3.3)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1

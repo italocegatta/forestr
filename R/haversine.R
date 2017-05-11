@@ -6,7 +6,7 @@
 #'
 haversine <- function(lon1, lat1, lon2, lat2) {
   rad <- pi/180
-  R <- 6371000
+  R <- 6378.1
 
   dlon <- (lon2 - lon1) * rad
   dlat <- (lat2 - lat1) * rad
@@ -18,7 +18,7 @@ haversine <- function(lon1, lat1, lon2, lat2) {
 
   c <- 2 * atan2(sqrt(a), sqrt(1 - a))
 
-  d <- R * c * 1000
+  d <- R * c
 
   return(d)
 }

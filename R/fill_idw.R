@@ -68,7 +68,9 @@ fill_idw <- function(df, x, group, lon, lat, dist = NULL) {
   a[["TRUE"]]$prec <- j_id$.zz
 
   # junta id-data faltante com base interpolacao
-  dplyr::bind_rows(a)[ , -ncol(a[["TRUE"]])]
+  z <- dplyr::arrange(dplyr::bind_rows(a), .aux_id)[ , -ncol(a[["TRUE"]])]
+
+  return(z)
 }
 
 

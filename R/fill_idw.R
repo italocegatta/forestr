@@ -22,14 +22,17 @@
 # group = "date"
 # lon = "lon"
 # lat = "lat"
+# radius = 100
 # fill_idw(raw, "prec", "date", "lon", "lat")
 #
-fill_idw <- function(df, x, group, lon, lat, dist = NULL) {
+fill_idw <- function(df, x, group, lon, lat, radius = 100) {
 
-  # cria primary key
+  # testar quando não tiver obs vazias
+  #
+  # primary key
   df <- dplyr::mutate(df, .aux_id = 1:nrow(df))
 
-  # separa dados faltantes
+  # splt missing values
   a <- split(df, is.na(df[[x]]))
 
   # identifica datas faltantes
@@ -46,6 +49,11 @@ fill_idw <- function(df, x, group, lon, lat, dist = NULL) {
     b_join$lon.x, b_join$lat.x,
     b_join$lon.y, b_join$lat.y
     )
+
+  # limita o raio de busca para interpolacao
+  #
+  # falta retornar erro quando não achar nenhuma estacao
+  b_join <- dplyr::filter(b_join, dis < radius)
 
   # calcula o idw para cada id-data faltante
   j <- dplyr::summarise_(
@@ -72,5 +80,3 @@ fill_idw <- function(df, x, group, lon, lat, dist = NULL) {
 
   return(z)
 }
-
-

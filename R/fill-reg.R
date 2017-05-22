@@ -1,45 +1,55 @@
-#' Fill gab using IDW interpolation
-#'
-#' @export
-#'
-# raw <- inmetdown::aws_import(
-#   c("A713", "A714", "A715", "A725", "A726", "A741", "A755", "A739"),
-#     "25/04/2017",
-#     "27/04/2017"
-#   ) %>%
-#   left_join(inmetdown::aws_stations(), by = "id") %>%
-#   select(id, date, prec, lat, lon)
-#
-# aux <- c(0.6, 6.2, 10.0, 2.2, 1.4, 0.0, 0.2, .8, 2.0, 1.0, 0.2, 0.6, 14.8)
-# raw[c(37:47, 107:108), ]$prec <- NA
-#
-# devtools::use_data(raw, overwrite = TRUE)
-# #Base exemplo
-# load("data/raw.rda")
-#
-# df = raw
-# x = "prec"
-# key = "date"
-# lon = "lon"
-# lat = "lat"
-# radius = 100
-# fill_idw(raw, "prec", "date", "lon", "lat")
-#
-fill_idw <- function(df, x, key, lon, lat, radius = 100) {
+library(tidyverse)
+library(forestr)
+
+df = sp_weather
+x = "t_min"
+id = "id"
+lon = "lon"
+lat = "lat"
+
+
+fill_id <- function(df, x, id, lon, lat) {
 
   # testar quando não tiver obs vazias
   #
   # primary key
-  df <- dplyr::mutate(df, .aux_id = 1:nrow(df))
+  backup <- dplyr::mutate(df, .aux_id = 1:nrow(df))
+
+  df_base <- backup[ , c("id", "t_min", "lon", "lat") ]
 
   # splt missing values
-  a <- split(df, is.na(df[[x]]))
+  a <- split(df_base, is.na(df_base[[x]]))
 
-  # identifica datas faltantes
-  k <- a[["TRUE"]][[key]]
+  # identifica os ids faltantes
+  k <- unique(a[["TRUE"]][[id]])
+
+  # estacoes candidatas
+  candi <- df %>%
+    group_by(id, lat, lon) %>%
+    summarise() %>%
+    ungroup() %>%
+    mutate(candidate = search_nearest_st(id, lon, lat, 1)) %>%
+    select(id, candidate) %>%
+    filter(id %in% k)
+
+  miss_cand <- dplyr::filter(a[["FALSE"]], id %in% c("A718", "A707")) %>%
+    mutate(.aux_id = 1:nrow(.)) %>%
+    tidyr::spread(id, t_min)
+
+  ggplot(miss_cand, aes(A707, A718)) +
+    geom_point()
+
+  #purrr::map(a, ~dplyr::filter(.x, id %in% c("A718", "A707")))
 
   # separa dados para as id-datas faltantes
   b <- a[["FALSE"]][a[["FALSE"]][[key]] %in% k, ]
+
+
+
+with(aux, search_nearest_st(id, lon, lat, 1))
+
+
+
 
   # traz a lon e lat dos dados faltantes para a base de interpolacao
   b_join <- dplyr::left_join(b, a[["TRUE"]] , by = key)
@@ -48,12 +58,12 @@ fill_idw <- function(df, x, key, lon, lat, radius = 100) {
   b_join$dis <- forestr::haversine(
     b_join$lon.x, b_join$lat.x,
     b_join$lon.y, b_join$lat.y
-    )
+  )
 
   # limita o raio de busca para interpolacao
   #
   # falta retornar erro quando não achar nenhuma estacao
-  b_join <- dplyr::filter(b_join, dis < radius)
+  #b_join <- dplyr::filter(b_join, dis < radius)
 
   # calcula o idw para cada id-data faltante
   j <- dplyr::summarise_(

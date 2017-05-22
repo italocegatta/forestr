@@ -14,19 +14,14 @@
 #   dplyr::select(id, date, prec, lat, lon)
 # }
 #
-# glimpse(sp_weather)
-#
 # sp_weather <- bind_rows(sp_weather)
 #
-# inmetdown::aws_import("A707")
 #
 # sp_weather %>%
 #   group_by(id) %>%
-#   summarise(n_falhas = is.na(prec))
-#
-#
-#
-# aux <- c(0.6, 6.2, 10.0, 2.2, 1.4, 0.0, 0.2, .8, 2.0, 1.0, 0.2, 0.6, 14.8)
-# raw[c(37:47, 107:108), ]$prec <- NA
-#
-# devtools::use_data(raw, overwrite = TRUE)
+#   summarise(n_falhas = sum(is.na(prec))) %>%
+#   arrange(-n_falhas)
+
+
+#devtools::use_data(sp_weather)
+

@@ -1,4 +1,6 @@
-search_nearest_st <- function(id, x, y, nearest) {
+#' @export
+#'
+search_nearest_st <- function(id, x, y, nearest = 1) {
   .class <- if (class(id) == "factor") {
     "character"
   } else {

@@ -4,7 +4,7 @@
 \alias{fill_idw}
 \title{Fill gab using IDW interpolation}
 \usage{
-fill_idw(df, x, group, lon, lat, radius = 100)
+fill_idw(df, x, key, lon, lat, radius = 100)
 }
 \description{
 Fill gab using IDW interpolation

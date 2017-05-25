@@ -27,6 +27,8 @@ p <- nrow(filter(f, is.na(t_min))) / nrow(f) * 100
 if (p > 30) stop("Tentar interpolação")
 
 
+# Estação mais proxima ----------------------------------------------------
+
 near_st <- df %>%
   group_by(id, lat, lon) %>%
   summarise() %>%
@@ -46,7 +48,7 @@ if (r2 < 0.7) stop("basca a proxima estação")
 d <- f[is.na(f$t_min), ]$date
 
 df[df$date == d & df$id == "A705", ]$t_min <-
-  predict(lm , df$t_min[df$id == near_st]
+  predict(lm , df$t_min[df$id == near_st])
 
 
 
@@ -67,9 +69,6 @@ filter(df, id %in% k) %>%
     miss = sum(is.na(t_min)),
     p = round((miss / n) * 100, 1)
   )
-
-
-
 
 
 # estacoes candidatas

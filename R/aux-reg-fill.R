@@ -11,7 +11,7 @@ complete_fill <- function(data, value) {
 key_miss <- function(data, key, value) {
   x <- '[['(data, lazyeval::expr_text(value))
 
-  k <- data[is.na(x), lazyeval::expr_text(key)][[1]]
+  k <- '[['(dplyr::filter(data, is.na(x)), lazyeval::expr_text(key))
 
   unique(k)
 }
@@ -19,20 +19,18 @@ key_miss <- function(data, key, value) {
 #' @export
 #'
 prop_miss <- function(data, key, value) {
-  x <- sum(is.na(data[[lazyeval::expr_text(value)]]))
+  x <- sum(is.na('[['(data, lazyeval::expr_text(value))))
   y <- nrow(data)
 
   x / y * 100
 }
 
-#' @export
-#'
-list_key <- function(data, key, lon, lat) {
+summa_key <- function(data, ...) {
   g <- dplyr::group_by_(
     data,
     lazyeval::lazy(key),
-    lazyeval::lazy(lon),
-    lazyeval::lazy(lat)
+    lazyeval::lazy(lat),
+    lazyeval::lazy(lon)
   )
   s <- dplyr::summarise(g)
 
@@ -42,12 +40,20 @@ list_key <- function(data, key, lon, lat) {
 #' @export
 #'
 near_st <- function(data, key, lon, lat, value) {
-  x <- list_key(data, key, lon, lat)
+  g <- dplyr::group_by_(
+    data,
+    lazyeval::lazy(key),
+    lazyeval::lazy(lat),
+    lazyeval::lazy(lon)
+  )
+  s <- dplyr::summarise(g)
+
+  x <- dplyr::ungroup(s)
 
   y <- search_nearest_st(
-    x[[lazyeval::expr_text(key)]],
-    x[[lazyeval::expr_text(lon)]],
-    x[[lazyeval::expr_text(lat)]]
+    '[['(x, lazyeval::expr_text(key)),
+    '[['(x, lazyeval::expr_text(lon)),
+    '[['(x, lazyeval::expr_text(lat))
   )
 
   l_near <- dplyr::mutate(
@@ -55,10 +61,31 @@ near_st <- function(data, key, lon, lat, value) {
     nearest = y
   )
 
-  z <- l_near[[lazyeval::expr_text(key)]] == value
+  z <- '[['(l_near, lazyeval::expr_text(key)) == value
 
-  l_near[z, "nearest"][[1]]
+  '['(l_near, z, "nearest")[[1]]
 }
+
+
+#' @export
+#'
+missing_cover <- function(data, data_key, key, value, key_time, nearest_key) {
+  f1 <- lazyeval::interp(~is.na(x), x = lazyeval::lazy(value))
+  date_i <- '[['(dplyr::filter_(data_key, f1), lazyeval::expr_text(key_time))
+
+  f2 <- lazyeval::interp(
+    ~k == n & kt %in% date_i,
+    k = lazyeval::lazy(key),
+    n = lazyeval::lazy(nearest_key),
+    kt = lazyeval::lazy(key_time)
+  )
+  #f2
+  value_i <- '[['(dplyr::filter_(data, f2), lazyeval::expr_text(value))
+  #value_i
+
+  sum(!is.na(value_i)) / length(value_i) * 100
+}
+
 
 #' @export
 #'

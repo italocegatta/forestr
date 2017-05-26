@@ -1,6 +1,5 @@
 library(tidyverse)
 library(forestr)
-#library(lazyeval)
 
 df = sp_weather
 i = 1
@@ -13,16 +12,16 @@ if (complete_fill(df, t_min)) return(df)
 
 # Quis estações? ----------------------------------------------------------
 
-# "A705"
-k_miss <- key_miss(df, id, t_min)
 
+k_miss <- key_miss(df, id, t_min)
+# "A705"
 
 ########### inicio do for ou funcional ####################################
 
 
 # Pode ajustar regressão? -------------------------------------------------
 
-df_i <- df[df$id == k_miss[i], ]
+df_i <- dplyr::filter(df, id == k_miss[i])
 
 if (prop_miss(df_i, id, t_min) > 70) {
   stop("tentar IDW")
@@ -33,6 +32,10 @@ if (prop_miss(df_i, id, t_min) > 70) {
 
 nearest_i <- near_st(df, id, lon, lat, k_miss[i])
 
+
+# Tem recobrimento? -------------------------------------------------------
+
+missing_cover(df, df_i, id, t_min, date, nearest_i)
 
 # Ajuste é bom? -----------------------------------------------------------
 

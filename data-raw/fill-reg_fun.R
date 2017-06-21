@@ -37,6 +37,7 @@ nearest_i <- near_st(df, id, lon, lat, k_miss[i])
 
 missing_cover(df, df_i, id, t_min, date, nearest_i)
 
+
 # Ajuste é bom? -----------------------------------------------------------
 
 lm_i <- fit_model(df, id, t_min,  k_miss[i], nearest_i)
@@ -49,3 +50,4 @@ if (summary(lm_i)$r.squared < 0.8) {
 # Preenche as falhas ------------------------------------------------------
 
 predict_value(df, id, t_min,  k_miss[i], nearest_i)
+

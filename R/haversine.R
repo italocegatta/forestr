@@ -18,7 +18,5 @@ haversine <- function(lon1, lat1, lon2, lat2) {
 
   c <- 2 * atan2(sqrt(a), sqrt(1 - a))
 
-  d <- R * c
-
-  return(d)
+  R * c
 }

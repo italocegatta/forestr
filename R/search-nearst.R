@@ -1,31 +1,30 @@
 #' @export
 #'
-search_nearest_st <- function(id, x, y, nearest = 1) {
-  .class <- if (class(id) == "factor") {
+search_nearest  <- function(id, x, y, nearest = 1) {
+  aux_class <- if (class(id) == "factor") {
     "character"
   } else {
     class(id)
   }
 
   m <- as.matrix(dist(data.frame(x, y)))
-
   rownames(m) <- id; colnames(m) <- id
 
-  z <- as.data.frame(m) %>%
-    tibble::as_tibble() %>%
-    dplyr::mutate(id = id) %>%
-    tidyr::gather(candidate, .dist, -id) %>%
-    dplyr::filter(.dist != 0) %>%
-    dplyr::group_by(id) %>%
-    dplyr::mutate(.rank = dplyr::min_rank(.dist)) %>%
-    dplyr::arrange(id, .rank) %>%
-    dplyr::ungroup() %>%
-    dplyr::filter(.rank <= nearest) %>%
-    dplyr::select(-.rank) %>%
-    dplyr::mutate(
-      id = 'class<-'(id, .class),
-      candidate = 'class<-'(candidate, .class)
+  df <- as.data.frame(m)
+  df <- dplyr::mutate(df, id = id)
+  df <- tidyr::gather(df, candidate, .dist, -id)
+  df <- dplyr::filter(df, .dist != 0)
+  df <- dplyr::group_by(df, id)
+  df <- dplyr::mutate(df, .rank = dplyr::min_rank(.dist))
+  df <- dplyr::arrange(df, id, .rank)
+  df <- dplyr::ungroup(df)
+  df <- dplyr::filter(df, .rank <= nearest)
+  df <- dplyr::select(df, -.rank)
+  df <- dplyr::mutate(
+      df,
+      id = 'class<-'(id, aux_class),
+      candidate = 'class<-'(candidate, aux_class)
     )
 
-  return(z$candidate)
+  df$candidate
 }

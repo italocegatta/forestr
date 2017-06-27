@@ -7,7 +7,7 @@ i = 1
 
 # Tem falha? --------------------------------------------------------------
 
-if (complete_fill(df, t_min)) return(df)
+if (is_complete(head(df), t_min)) return(df)
 
 
 # Quis estações? ----------------------------------------------------------

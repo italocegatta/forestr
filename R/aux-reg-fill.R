@@ -1,69 +1,61 @@
 #' @export
-#'
-complete_fill <- function(data, value) {
-  x <- '[['(data, lazyeval::expr_text(value))
+#' # test if vector is fill
+is_complete <- function(data, value) {
+  value <- dplyr::enquo(value)
 
-  all(!is.na(x))
+  vec <- dplyr::pull(data, !! value)
+  all(!is.na(vec))
 }
 
 #' @export
 #'
-key_miss <- function(data, key, value) {
-  x <- '[['(data, lazyeval::expr_text(value))
+id_miss <- function(data, id, value) {
+  id <- dplyr::enquo(id)
+  value <- dplyr::enquo(value)
 
-  k <- '[['(dplyr::filter(data, is.na(x)), lazyeval::expr_text(key))
+  vec <- is.na(dplyr::pull(data, !! value))
+
+  k <- dplyr::pull(data[vec, ], !! id)
 
   unique(k)
 }
 
 #' @export
 #'
-prop_miss <- function(data, key, value) {
-  x <- sum(is.na('[['(data, lazyeval::expr_text(value))))
-  y <- nrow(data)
+prop_miss <- function(data, id, value) {
+  id <- dplyr::enquo(id)
+  value <- dplyr::enquo(value)
 
-  x / y * 100
+  vec <- is.na(dplyr::pull(data, !! value))
+  sum(vec) / nrow(data) * 100
 }
 
-summa_key <- function(data, ...) {
-  g <- dplyr::group_by_(
-    data,
-    lazyeval::lazy(key),
-    lazyeval::lazy(lat),
-    lazyeval::lazy(lon)
-  )
-  s <- dplyr::summarise(g)
+key_summarise <- function(data, ...) {
+  group_by <- dplyr::quos(...)
 
-  ungroup(s)
+  g <- dplyr::group_by(data, !!!group_by)
+  s <- dplyr::summarise(g)
+  dplyr::ungroup(s)
 }
 
 #' @export
 #'
-near_st <- function(data, key, lon, lat, value) {
-  g <- dplyr::group_by_(
-    data,
-    lazyeval::lazy(key),
-    lazyeval::lazy(lat),
-    lazyeval::lazy(lon)
-  )
-  s <- dplyr::summarise(g)
+near_st <- function(data, key, lon, lat) {
+  key <- dplyr::enquo(key)
+  lon <- dplyr::enquo(lon)
+  lat <- dplyr::enquo(lat)
+  value <- dplyr::enquo(value)
 
-  x <- dplyr::ungroup(s)
+  x <- key_summarise(data, !!key, !!lon, !!lat)
 
-  y <- search_nearest_st(
-    '[['(x, lazyeval::expr_text(key)),
-    '[['(x, lazyeval::expr_text(lon)),
-    '[['(x, lazyeval::expr_text(lat))
-  )
-
-  l_near <- dplyr::mutate(
+  dplyr::mutate(
     x,
-    nearest = y
+    nearest = search_nearest(
+      !!key,
+      !!lon,
+      !!lat
+    )
   )
-
-  z <- '[['(l_near, lazyeval::expr_text(key)) == value
-
-  '['(l_near, z, "nearest")[[1]]
 }
 
 

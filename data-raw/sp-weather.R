@@ -16,4 +16,11 @@ for( i in ids) {
 sp_weather <- bind_rows(sp_weather) %>%
   select(-url)
 
+sp_weather <-   dplyr::filter(
+  sp_weather,
+  ! id %in% c("A763","A705", "A718", "A768")
+)
+
 devtools::use_data(sp_weather, overwrite = TRUE)
+
+

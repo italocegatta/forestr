@@ -1,30 +1,19 @@
-#' Fill gab using IDW interpolation
+#' Inverse distance weighting
 #'
 #' @export
 #'
-# raw <- inmetdown::aws_import(
-#   c("A713", "A714", "A715", "A725", "A726", "A741", "A755", "A739"),
-#     "25/04/2017",
-#     "27/04/2017"
-#   ) %>%
-#   left_join(inmetdown::aws_stations(), by = "id") %>%
-#   select(id, date, prec, lat, lon)
-#
-# aux <- c(0.6, 6.2, 10.0, 2.2, 1.4, 0.0, 0.2, .8, 2.0, 1.0, 0.2, 0.6, 14.8)
-# raw[c(37:47, 107:108), ]$prec <- NA
-#
-# devtools::use_data(raw, overwrite = TRUE)
-# #Base exemplo
-# load("data/raw.rda")
-#
-# df = raw
-# x = "prec"
-# key = "date"
-# lon = "lon"
-# lat = "lat"
-# radius = 100
-# fill_idw(raw, "prec", "date", "lon", "lat")
-#
+idw <- function(x, dist, na.rm = TRUE) {
+  s1 <-  sum(x / dist^2, na.rm = na.rm)
+  s2 <-  sum(1 / dist^2, na.rm = na.rm)
+
+  s1 / s2
+}
+
+
+#' Fill gap with IDW interpolation
+#'
+#' @export
+#'
 fill_idw <- function(df, x, key, lon, lat, radius = 100) {
 
   # testar quando não tiver obs vazias

@@ -7,13 +7,13 @@ i = 1
 
 # Tem falha? --------------------------------------------------------------
 
-if (is_complete(head(df), t_min)) return(df)
+if (is_complete(df, t_min)) return(df)
 
 
 # Quis estações? ----------------------------------------------------------
 
 
-k_miss <- key_miss(df, id, t_min)
+list_id_miss <- id_miss(df, id, t_min)
 # "A705"
 
 ########### inicio do for ou funcional ####################################
@@ -21,7 +21,7 @@ k_miss <- key_miss(df, id, t_min)
 
 # Pode ajustar regressão? -------------------------------------------------
 
-df_i <- dplyr::filter(df, id == k_miss[i])
+df_i <- dplyr::filter(df, id == list_id_miss[i])
 
 if (prop_miss(df_i, id, t_min) > 70) {
   stop("tentar IDW")
@@ -30,17 +30,21 @@ if (prop_miss(df_i, id, t_min) > 70) {
 
 # Estação mais proxima ----------------------------------------------------
 
-nearest_i <- near_st(df, id, lon, lat, k_miss[i])
+nearest_i <- near_st(df, id, lon, lat, list_id_miss[i])
+
+df_nxt <- dplyr::filter(df, id == nearest_i)
 
 
 # Tem recobrimento? -------------------------------------------------------
 
-missing_cover(df, df_i, id, t_min, date, nearest_i)
+if (coverage(df_i, df_nxt, id, date, t_min) != 100) {
+  stop("Tentar a proxima estacao")
+}
 
 
 # Ajuste é bom? -----------------------------------------------------------
 
-lm_i <- fit_model(df, id, t_min,  k_miss[i], nearest_i)
+lm_i <- fit_model(df_i, df_nxt, t_min)
 
 if (summary(lm_i)$r.squared < 0.8) {
   stop("proxima estação")
@@ -49,5 +53,5 @@ if (summary(lm_i)$r.squared < 0.8) {
 
 # Preenche as falhas ------------------------------------------------------
 
-predict_value(df, id, t_min,  k_miss[i], nearest_i)
+predict_value(df_i, df_nxt, t_min, lm_i)
 

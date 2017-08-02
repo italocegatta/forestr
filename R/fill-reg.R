@@ -33,7 +33,7 @@ fill_reg <- function(data, id, key, lon, lat, value) {
     }
 
     vec_pred_i <- predict_value(lm_i, df_i, df_nxt, !!value)
-    vec_id_i <- dplyr::pull(data, (!!id)) == list_id_miss[i]
+    vec_id_i <- dplyr::pull(data, !!id) == list_id_miss[i]
 
     data[vec_id_i, dplyr::quo_name(value)] <- vec_pred_i
   }
@@ -47,7 +47,7 @@ is_complete <- function(data, value) {
   # test if vector is fill
   value <- dplyr::enquo(value)
 
-  vec <- dplyr::pull(data, !! value)
+  vec <- dplyr::pull(data, !!value)
   all(!is.na(vec))
 }
 
@@ -142,7 +142,7 @@ predict_value <- function(model, data_i, data_nxt, value) {
   value <- dplyr::enquo(value)
 
   x <- dplyr::pull(data_nxt, !!value)
-  y <- dplyr::pull(data_i, !! value)
+  y <- dplyr::pull(data_i, !!value)
 
   vec <- is.na(y)
 

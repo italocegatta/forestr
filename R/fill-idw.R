@@ -1,28 +1,16 @@
-#' Inverse distance weighting
-#'
-#' @export
-#'
-idw <- function(x, dist, na.rm = TRUE) {
-  s1 <-  sum(x / dist^2, na.rm = na.rm)
-  s2 <-  sum(1 / dist^2, na.rm = na.rm)
-
-  s1 / s2
-}
-
-
 #' Fill gap with IDW interpolation
 #'
 #' @export
 #'
-fill_idw <- function(df, x, key, lon, lat, radius = 100) {
+fill_idw <- function(data, key, lon, lat, value, radius = 100) {
 
   # testar quando não tiver obs vazias
   #
   # primary key
-  df <- dplyr::mutate(df, .aux_id = 1:nrow(df))
+  data <- dplyr::mutate(data, .aux_id = 1:nrow(data))
 
   # splt missing values
-  a <- split(df, is.na(df[[x]]))
+  a <- split(data, is.na(data[[value]]))
 
   # identifica datas faltantes
   k <- a[["TRUE"]][[key]]
@@ -51,7 +39,7 @@ fill_idw <- function(df, x, key, lon, lat, radius = 100) {
       .zz = lazyeval::interp(
         ~forestr::idw(v, d),
         .values = list(
-          v = as.name(paste0(x, ".x")),
+          v = as.name(paste0(value, ".x")),
           d = quote(dis)
         )
       )
@@ -68,4 +56,16 @@ fill_idw <- function(df, x, key, lon, lat, radius = 100) {
   z <- dplyr::arrange(dplyr::bind_rows(a), .aux_id)[ , -ncol(a[["TRUE"]])]
 
   return(z)
+}
+
+
+#' Inverse distance weighting
+#'
+#' @export
+#'
+idw <- function(x, dist, na.rm = TRUE) {
+  s1 <-  sum(x / dist^2, na.rm = na.rm)
+  s2 <-  sum(1 / dist^2, na.rm = na.rm)
+
+  s1 / s2
 }

@@ -2,6 +2,7 @@
 
 export(coverage)
 export(fill_idw)
+export(fill_reg)
 export(fit_model)
 export(haversine)
 export(id_miss)

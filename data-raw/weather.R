@@ -1,4 +1,5 @@
 library(dplyr)
+library(lubridate)
 library(inmetdown)
 
 stations_id <- c("A725", "A708", "A714", "A716", "A726", "A711", "A740", "A713", "A842", "A821", "A763")
@@ -11,7 +12,13 @@ weather <- inmetdown::aws_import(
   "10/07/2017"
   ) %>%
   left_join(stations, by = "id") %>%
-  select(id, city:alt, date, t_max:prec) %>%
-  arrange(id, date)
+  mutate(
+    time = hour(date),
+    date = as.Date(date)
+  ) %>%
+  select(id, city:alt, date, time, t_max:prec) %>%
+  arrange(id, date, time)
 
 devtools::use_data(weather, overwrite = TRUE)
+
+

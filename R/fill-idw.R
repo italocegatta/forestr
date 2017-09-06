@@ -3,6 +3,8 @@
 #' @export
 #'
 fill_idw <- function(data, key, lon, lat, value, radius = 400) {
+
+  # problema quando a tabela tem o noma 'data' e da ambiguidade
   key <- dplyr::enquo(key)
   value <- dplyr::enquo(value)
   lon <- dplyr::enquo(lon)

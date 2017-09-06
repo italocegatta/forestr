@@ -11,7 +11,8 @@
 #'  \item \code{id}: Longitude.
 #'  \item \code{id}: Latitude.
 #'  \item \code{id}: Altitude.
-#'  \item \code{date}: Time of log in datetime format
+#'  \item \code{date}: Date of log.
+#'  \item \code{time}: Time of log.
 #'  \item \code{t_max}: Maximun temperature.
 #'  \item \code{t_min}: Minimum temperature.
 #'  \item \code{rh_max}: Maximum relative humidity.

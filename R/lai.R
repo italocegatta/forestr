@@ -18,14 +18,15 @@ lai <- function(int, ext, lat, lon, date, hour) {
   ((1 - 1 / (2 * .k)) * .fb - 1) * log(.tau) / (0.86 * (1 - 0.47 * .fb))
 }
 
-
-# Helpers -----------------------------------------------------------------
-
-# day of the year
-#
+#' day of the year
+#'
+#' @export
+#'
 doy <- function(date) {
   as.POSIXlt(date)$yday + 1
 }
+
+# Helpers -----------------------------------------------------------------
 
 # solar declination
 #

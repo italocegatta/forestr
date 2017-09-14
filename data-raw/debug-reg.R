@@ -3,6 +3,9 @@ library(dplyr)
 library(lubridate)
 library(ggplot2)
 
+library(forestr)
+fill_reg(weather,id, date, lon, lat, rh_min)
+
 
 weather %>%
   group_by(id, city) %>%

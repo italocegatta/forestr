@@ -3,7 +3,7 @@ library(forestr)
 key = dplyr::quo(date_time)
 lon = dplyr::quo(lon)
 lat = dplyr::quo(lat)
-value = dplyr::quo(t_min)
+value = dplyr::quo(rh_min)
 id = dplyr::quo(id)
 
 

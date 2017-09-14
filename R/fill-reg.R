@@ -16,6 +16,7 @@ fill_reg <- function(.data, id, key, lon, lat, value) {
   list_id_miss <- id_miss(.data, !!id, !!value)
 
   # i = 1
+  # i = 2
   for (i in seq_along(list_id_miss)) {
 
     # filter id's data for each loop
@@ -29,41 +30,60 @@ fill_reg <- function(.data, id, key, lon, lat, value) {
     }
 
 
-    ## precisa pegar mais de uma etação proxima!
     # get nearst id
-    nxt <- nxt_id(.data, !!id, !!lon, !!lat, list_id_miss[i])
+    nxts <- nxt_id(.data, !!id, !!lon, !!lat, list_id_miss[i])
 
 
-    # filter nearest id' data
-    df_nxt <- dplyr::filter(.data, (!!id) == nxt)
+    j_r2 <- tibble::tibble(j = nxts, r2  = NA)
+    for (j in seq_along(nxts)) {
+
+      # filter nearest id' data
+      df_nxt_j <- dplyr::filter(.data, (!!id) == nxts[j])
 
 
-    # calc coverage percent. trigger into call function??
-    if (coverage(df_i, df_nxt, !!key, !!value) < 80) {
-      # message or stop?
-      p <- coverage(df_i, df_nxt, !!id, !!key, !!value)
-      message(glue::glue("{list_id_miss[i]} and {nxt} don't have enoght coverage. Poor {p}%"))
-    }
+      # calc coverage percent. trigger into call function??
+      if (coverage(df_i, df_nxt_j, !!key, !!value) < 80) {
+
+        next()
+      }
+
+      # fit simple linear model
+      lm_i <- fit_model(df_i, df_nxt_j, !!value)
 
 
-    # fit simple linear model
-    lm_i <- fit_model(df_i, df_nxt, !!value)
+      # test r2. trigger into call function??
+      if (summary(lm_i)$r.squared < 0.8) {
 
+        j_r2$r2[j] <- summary(lm_i)$r.squared
 
-    # test r2. trigger into call function??
-    if (summary(lm_i)$r.squared < 0.8) {
-      r2 <- round(summary(lm_i)$r.squared, 2)
-      message(glue::glue("{list_id_miss[i]} and {nxt} don't have a good fit. Poor {r2}"))
+        if (j == 10) {
+          jj <- which.max(j_r2$r2)
+
+          df_nxt_j <- dplyr::filter(.data, (!!id) == nxts[jj])
+          lm_i <- fit_model(df_i, df_nxt_j, !!value)
+          r2 <- round(summary(lm_i)$r.squared, 2)
+
+          message(glue::glue("ajuste de {list_id_miss[i]} abaixo do limite (r2 = {r2})"))
+
+          break()
+        }
+
+        next()
+      }
+
+      break()
     }
 
 
     # predict just NA value
-    vec_pred_i <- predict_value(lm_i, df_i, df_nxt, !!value)
+    vec_pred_i <- predict_value(lm_i, df_i, df_nxt_j, !!value)
+
 
     # replace predic values into base data
     vec_id_i <- dplyr::pull(.data, !!id) == list_id_miss[i]
     .data[vec_id_i, dplyr::quo_name(value)] <- vec_pred_i
-  }
+
+    }
 
   .data
 }

@@ -20,13 +20,13 @@ search_nearest  <- function(data, id, x, y) {
   df <- as.data.frame(m)
   df <- tibble::rownames_to_column(df)
   df <- tidyr::gather(df, candidate, .dist, -rowname)
-  df <- dplyr::filter(df, .dist != 0)#
+  df <- dplyr::filter(df, .dist != 0)
   df <- dplyr::group_by(df, rowname)
   df <- dplyr::mutate(df, .rank = dplyr::min_rank(.dist))
   df <- dplyr::arrange(df, rowname, .rank)
   df <- dplyr::ungroup(df)
-  df <- dplyr::filter(df, .rank <= 1) # só o mais proximo
-  df <- dplyr::select(df, -.rank)#; df
+  df <- dplyr::filter(df, .rank <= 10) # 10 mais proximos
+  df <- dplyr::select(df, -.rank)
   df <-dplyr::mutate(
     df,
     !!dplyr::quo_name(id) := 'class<-'(rowname, aux_class),

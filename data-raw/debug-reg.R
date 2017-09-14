@@ -1,33 +1,21 @@
 library(forestr)
 library(dplyr)
 library(lubridate)
-library(hms)
 library(ggplot2)
 
 
 weather %>%
   group_by(id, city) %>%
-  summarise_at(vars(t_max:prec), function(x) sum(is.na(x)))
+  summarise_at(vars(t_min, rh_min, prec), function(x) sum(is.na(x)))
 
 weather_fill <- weather %>%
-  fill_reg(id, date, lon, lat, t_max) %>%
   fill_reg(id, date, lon, lat, t_min) %>%
-  fill_reg(id, date, lon, lat, rh_max) %>%
   fill_reg(id, date, lon, lat, rh_min) %>%
-  fill_reg(id, date, lon, lat, dp_max) %>%
-  fill_reg(id, date, lon, lat, dp_min) %>%
-  fill_reg(id, date, lon, lat, ap_max) %>%
-  fill_reg(id, date, lon, lat, ap_min) %>%
-  fill_reg(id, date, lon, lat, ws) %>%
-  fill_reg(id, date, lon, lat, wg) %>%
-  fill_reg(id, date, lon, lat, wd) %>%
-  fill_reg(id, date, lon, lat, rad) %>%
   fill_idw(id, lon, lat, prec)
 
 weather_fill %>%
   group_by(id, city) %>%
-  summarise_at(vars(t_max:prec), function(x) sum(is.na(x))) %>%
-  ungroup()
+  summarise_at(vars(t_min, rh_min, prec), function(x) sum(is.na(x)))
 
 
 

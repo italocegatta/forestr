@@ -4,7 +4,7 @@
 \alias{fill_idw}
 \title{Fill gap with IDW interpolation}
 \usage{
-fill_idw(data, key, lon, lat, value, radius = 400)
+fill_idw(.data, key, lon, lat, value, radius = 400)
 }
 \description{
 Fill gap with IDW interpolation

@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-summ_var <- function(vec, fun = mean, n_min = 15, ...) {
+summ_var <- function(vec, fun = mean, n_min = 18, ...) {
   n_fill <- sum(!is.na(vec))
 
   if (n_fill >= n_min) {

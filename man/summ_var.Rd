@@ -4,7 +4,7 @@
 \alias{summ_var}
 \title{Summarise by minimum observation}
 \usage{
-summ_var(vec, fun = mean, n_min = 15, ...)
+summ_var(vec, fun = mean, n_min = 18, ...)
 }
 \description{
 Summarise by minimum observation

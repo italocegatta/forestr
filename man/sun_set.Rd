@@ -4,7 +4,7 @@
 \alias{sun_set}
 \title{Sun set}
 \usage{
-sun_set(doy, lon, lat)
+sun_set(date, lon, lat)
 }
 \description{
 Sun set

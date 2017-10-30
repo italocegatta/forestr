@@ -57,28 +57,28 @@ etp <- function(date, temp, lat) {
   )
 }
 
-.data = df_etp
-cad = "cad"
-prec = "prec"
-etp = "etp"
+# .data = df_etp
+# cad = "cad"
+# prec = "prec"
+# etp = "etp"
 
-wb <- function(.data, cad, prec, etp) {
+# wb <- function(.data, cad, prec, etp) {
+#
+#   prec <- dplyr::enquo(prec)
+#   etp <- dplyr::enquo(etp)
+#   cad <- dplyr::enquo(cad)
+#
+#   p_etp <- pull(.data, !!prec) - pull(.data, !!etp)
+#
+#   guess_start <- 4
+#
+#   neg_acum <-
+#
+#
+# }
 
-  prec <- dplyr::enquo(prec)
-  etp <- dplyr::enquo(etp)
-  cad <- dplyr::enquo(cad)
-
-  p_etp <- pull(.data, !!prec) - pull(.data, !!etp)
-
-  guess_start <- 4
-
-  neg_acum <-
-
-
-}
-
-x <- p_etp
-i = 1
+# x <- p_etp
+# i = 1
 guess_start <- function(x) {
 
   #n = length(x)

@@ -5,7 +5,7 @@
 sun_rise <- function(date, lon, lat) {
   z <- purrr::pmap_df(list(doy(date), lon, lat), sun_calc)
 
-  return(z[["rise"]])
+  z[["rise"]]
 }
 
 
@@ -13,10 +13,10 @@ sun_rise <- function(date, lon, lat) {
 #'
 #' @export
 #'
-sun_set <- function(doy, lon, lat) {
-  z <- purrr::pmap_df(list(doy, lon, lat), sun_calc)
+sun_set <- function(date, lon, lat) {
+  z <- purrr::pmap_df(list(doy(date), lon, lat), sun_calc)
 
-  return(z[["set"]])
+  z[["set"]]
 }
 
 sun_calc <- function(doy, lon, lat) {

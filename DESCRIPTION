@@ -1,6 +1,6 @@
 Package: forestr
-Title: Functions for forest modeling
-Version: 0.0.0.9000
+Title: Miscellaneous functions to forest modeling
+Version: 0.0.1
 Authors@R: person("Italo", "Cegatta", email = "italocegatta@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.3.0)

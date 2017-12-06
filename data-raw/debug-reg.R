@@ -4,7 +4,9 @@ library(lubridate)
 library(ggplot2)
 
 library(forestr)
-fill_reg(weather,id, date, lon, lat, rh_min)
+
+fill_reg(weather,id, date, lon, lat, rh_min) %>%
+  filter(is.na(rh_min))
 
 
 weather %>%

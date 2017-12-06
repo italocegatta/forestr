@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-fill_idw <- function(.data, key, lon, lat, value, radius = 400) {
+fill_idw <- function(.data, key, lon, lat, value, radius = 100) {
 
   # problema quando a tabela tem o noma 'data' e da ambiguidade
   key <- dplyr::enquo(key)
@@ -23,7 +23,7 @@ fill_idw <- function(.data, key, lon, lat, value, radius = 400) {
 
   # trigger to complete data
   if (is.null(df_miss)) {
-    stop("Cool! No missing values")
+    return(.data)
   }
 
   # identify missing/fill keys

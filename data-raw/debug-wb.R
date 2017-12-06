@@ -9,6 +9,11 @@ df <- data_frame(
   prec =  c(240.20, 190.90, 147.30, 71.00, 65.10, 48.70, 36.80, 37.40, 65.60, 123.60, 137.50, 217.10)
   )
 
-df_etp <- df %>%
+df3 <- bind_rows(df, df, .id = "id")
+
+write.csv2(df, "teste_etp.csv")
+
+df3_etp <- df3 %>%
+  group_by(id) %>%
   mutate(etp = etp(date, t_med, lat))
 

@@ -33,13 +33,11 @@ fill_reg <- function(.data, id, key, lon, lat, value) {
     # get nearst id
     nxts <- nxt_id(.data, !!id, !!lon, !!lat, list_id_miss[i])
 
-
     j_r2 <- tibble::tibble(j = nxts, r2  = NA)
     for (j in seq_along(nxts)) {
 
       # filter nearest id' data
       df_nxt_j <- dplyr::filter(.data, (!!id) == nxts[j])
-
 
       # calc coverage percent. trigger into call function??
       if (coverage(df_i, df_nxt_j, !!key, !!value) < 80) {
@@ -49,7 +47,6 @@ fill_reg <- function(.data, id, key, lon, lat, value) {
 
       # fit simple linear model
       lm_i <- fit_model(df_i, df_nxt_j, !!value)
-
 
       # test r2. trigger into call function??
       if (summary(lm_i)$r.squared < 0.8) {
@@ -88,8 +85,7 @@ fill_reg <- function(.data, id, key, lon, lat, value) {
   .data
 }
 
-#' @export
-#'
+#
 is_complete <- function(.data, value) {
   # test if vector is fill
   value <- dplyr::enquo(value)
@@ -98,8 +94,7 @@ is_complete <- function(.data, value) {
   all(!is.na(vec))
 }
 
-#' @export
-#'
+#
 id_miss <- function(.data, id, value) {
   id <- dplyr::enquo(id)
   value <- dplyr::enquo(value)
@@ -111,8 +106,7 @@ id_miss <- function(.data, id, value) {
   unique(k)
 }
 
-#' @export
-#'
+#
 prop_miss <- function(.data, value) {
   value <- dplyr::enquo(value)
 
@@ -120,6 +114,7 @@ prop_miss <- function(.data, value) {
   sum(vec) / nrow(.data) * 100
 }
 
+#
 summarise_group <- function(.data, ...) {
   group_by <- dplyr::quos(...)
 
@@ -128,8 +123,7 @@ summarise_group <- function(.data, ...) {
   dplyr::ungroup(s)
 }
 
-#' @export
-#'
+#
 nxt_id <- function(.data, id, lon, lat, target) {
 
   id <- dplyr::enquo(id)
@@ -143,9 +137,7 @@ nxt_id <- function(.data, id, lon, lat, target) {
   dplyr::filter(y, (!!id) == target)[[2]]
 }
 
-
-#' @export
-#'
+#
 coverage <- function(data_i, data_nxt, key, value) {
   key <- dplyr::enquo(key)
   value <- dplyr::enquo(value)
@@ -171,9 +163,7 @@ coverage <- function(data_i, data_nxt, key, value) {
   sum(fill_vec) / nrow(join) * 100
 }
 
-
-#' @export
-#'
+#
 fit_model <- function(data_i, data_nxt, value) {
   value <- dplyr::enquo(value)
 
@@ -183,8 +173,7 @@ fit_model <- function(data_i, data_nxt, value) {
   lm(y ~ x)
 }
 
-#' @export
-#'
+#
 predict_value <- function(model, data_i, data_nxt, value) {
   value <- dplyr::enquo(value)
 

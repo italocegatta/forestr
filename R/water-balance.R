@@ -61,15 +61,88 @@ etp <- function(date, t_med, lat, i = NULL, a = NULL) {
 # prec = "prec"
 # etp = "etp"
 
-wb <- function(.data, cad, prec, etp) {
+wb_seq <- function(.data, cad, prec, etp) {
 
   prec <- dplyr::enquo(prec)
   etp <- dplyr::enquo(etp)
   cad <- dplyr::enquo(cad)
-
   p_etp <- pull(.data, !!prec) - pull(.data, !!etp)
 
+  # neg = ifelse(p_etp < 0, p_etp, 0) %>% sum()
+  # posi = ifelse(p_etp >= 0, p_etp, 0) %>% sum()
+  #
+  # arm <- ifelse(
+  #   p_etp > 0,
+  #
+  # )
+
+  #neg_acum <- vector("numeric", length(prec))
+  arm <- vector("numeric", length(prec))
+  alt <- vector("numeric", length(prec))
+  etr <- vector("numeric", length(prec))
+  def <- vector("numeric", length(prec))
+  ext <- vector("numeric", length(prec))
+
+  wb_start <- FALSE
+
+# i = 1
+  for (i in seq_along(prec)) {
+
+    if (!wb_start) {
+      if (p_etp[i] > 0 & p_etp[i] > cad[i]) {
+        arm[i] <- cad[i]
+        alt[i] <- 0 #p_etp[i]
+        etr[i] <- etp[i]
+        def[i] <- etp[i] - etr[i]
+        ext[i] <- p_etp[i] - alt[i]
+        wb_start <- TRUE
+      } else {
+        arm[i] <- NA
+        alt[i] <- NA
+      }
+      next()
+    }
+
+    if (p_etp[i] < 0) {
+      arm_n <- arm[i - 1] * exp(p_etp[i] / cad[i])
+      arm[i] <- ifelse(arm_n < cad[i], arm_n, cad[i])
+    } else {
+      arm_n <- arm[i - 1] + p_etp[i]
+      arm[i] <- ifelse(arm_n < cad[i], arm_n, cad[i])
+    }
+
+    alt[i] <- arm[i] - arm[i-1]
+    if (p_etp[i] >= 0) {
+      etr[i] <- etp[i]
+    }
+
+    if (alt[i] < 0) {
+      etr[i] <- prec[i] + abs(alt[i])
+    }
+    # else ara etr?
+
+    def[i] <- etp[i] - etr[i]
+
+    if (arm[i] < cad[i]) {
+      ext[i] <- 0
+    } else {
+      ext[i] <- p_etp[i] - alt[i]
+    }
+  }
+
+  data_frame(
+    prec,
+    etp,
+    p_etp,
+    arm,
+    alt,
+    etr,
+    def,
+    ext
+  ) %>%
+  mutate_all(round, digits = 1)
 }
+
 
 # x <- p_etp
 # i = 1

@@ -27,4 +27,3 @@ summarise_var_part <- function(key, vec, fun = mean, groups = 3, n_min = 6, ...)
 
   fun(vec_fun, ...)
 }
-summarise_group()

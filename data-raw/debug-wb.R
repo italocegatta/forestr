@@ -13,15 +13,29 @@ p_etp <- prec - etp
 
 # sentelhas
 
-date = seq.Date(as.Date("2017-01-01"), as.Date("2017-12-01"), "month")
+date = seq.Date(as.Date("2017-01-01"), as.Date("2018-12-01"), "month")
 cad = rep(100, 12)
 lat = -22.93
 t_med = c(23.10, 23.50, 23.00, 21.10, 18.70, 17.40, 17.30, 18.90, 20.10, 21.20, 22.00, 22.50)
-prec =  c(240.20, 190.90, 147.30, 71.00, 65.10, 48.70, 36.80, 37.40, 65.60, 123.60, 137.50, 217.10)
+ppt =  c(240.20, 190.90, 147.30, 71.00, 65.10, 48.70, 36.80, 37.40, 65.60, 123.60, 137.50, 217.10)
 i = 111 # 103.7919
 a = 2.5 # 2.283487
 etp <- round(etp(date, t_med, lat, 111, 2.5), 1)
-p_etp <- prec - etp
+
+# vec_ppt <- rep(ppt, 2)
+# vec_etp <- rep(etp, 2)
+# vec_cad <- rep(cad, 2)
+
+
+df_etp <- data_frame(
+  date,
+  cad = rep(cad, 2),ppt = rep(ppt, 2), etp = rep(etp, 2)
+  )
+
+wb_seq(df_etp, cad, ppt, etp) %>%
+  View()
+
+
 
 
 if (neg_acum[i] > cad[i]) {

@@ -1,6 +1,24 @@
 library(tidyverse)
 library(forestr)
 
+
+df <- readxl::read_excel("data-raw/debug_bh.xlsx") %>%
+  group_by(nome) %>%
+  mutate(
+    data = as.Date(data),
+    cad = 100,
+    etp = etp(data, t_med, lat)
+  )
+
+vec_ppt <- filter(df, nome == "DOM014")$ppt
+vec_etp <- filter(df, nome == "DOM014")$etp
+vec_cad <- filter(df, nome == "DOM014")$cad
+
+wb_seq(filter(df, nome == "DOM014"), cad, ppt, etp) %>%
+  View()
+
+
+
 # pereira
 
 date = seq.Date(as.Date("2017-01-01"), as.Date("2017-12-01"), "month")
@@ -25,6 +43,7 @@ etp <- round(etp(date, t_med, lat, 111, 2.5), 1)
 # vec_ppt <- rep(ppt, 2)
 # vec_etp <- rep(etp, 2)
 # vec_cad <- rep(cad, 2)
+
 
 
 df_etp <- data_frame(

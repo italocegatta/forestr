@@ -48,7 +48,7 @@ fill_idw <- function(.data, key, lon, lat, value, radius = 100) {
 
 
   # filter minimum radius
-  df_fill_key_join <- dplyr::filter(df_fill_key_join, dis <= radius)
+  df_fill_key_join <- dplyr::filter(df_fill_key_join, dis <= radius, dis > 0)
 
 
   # falta retornar erro quando não achar nenhuma estacao

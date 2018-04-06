@@ -43,9 +43,9 @@ wb_seq <- function(.data, cad, ppt, etp) {
       } else {
         arm[i] <- NA
         alt[i] <- NA
-        # etr[i] <- NA
-        # def[i] <- NA
-        # ext[i] <- NA
+        etr[i] <- NA
+        def[i] <- NA
+        ext[i] <- NA
       }
       next()
     }

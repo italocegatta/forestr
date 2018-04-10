@@ -92,28 +92,28 @@ wb_seq <- function(.data, cad, ppt, etp) {
 
 # x <- p_etp
 # i = 1
-guess_start <- function(x) {
-
-  #n = length(x)
-
-  for (i in seq_along(x)) {
-   guess[i] <- all(x[0:2 + i] > 0)
-  }
-
-  which(x, guess[1])
-
-}
-
-seq_cycle <- function(x, new) {
-
-  stopifnot(new %in% x)
-
-  if (x[1] == new) {
-    return(x)
-  }
-
-  n <- length(x)
-  i <- which(x == new)
-
-  x[c(i:n, 1:(i-1))]
-}
+# guess_start <- function(x) {
+#
+#   #n = length(x)
+#
+#   for (i in seq_along(x)) {
+#    guess[i] <- all(x[0:2 + i] > 0)
+#   }
+#
+#   which(x, guess[1])
+#
+# }
+#
+# seq_cycle <- function(x, new) {
+#
+#   stopifnot(new %in% x)
+#
+#   if (x[1] == new) {
+#     return(x)
+#   }
+#
+#   n <- length(x)
+#   i <- which(x == new)
+#
+#   x[c(i:n, 1:(i-1))]
+# }

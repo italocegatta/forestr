@@ -15,19 +15,19 @@ etp <- function(date, t_med, lat, i = NULL, a = NULL) {
 
   ifelse(  # precisa vetorizar?
     t_med < 26.5,
-    16 * ((10 * (t_med / i))^a) * (n_hours / 12) * (n_days / 30),
-    (-415.85 + 32.24 * t_med - 0.43 * t_med^2) * (n_hours / 12) * (n_days/30)
+    round(16 * ((10 * (t_med / i))^a) * (n_hours / 12) * (n_days / 30)),
+    round((-415.85 + 32.24 * t_med - 0.43 * t_med^2) * (n_hours / 12) * (n_days/30), 2)
   )
 }
 
 
 wb_i <- function(temperature){
-  sum((0.2 * temperature)^1.514)
+  round(sum((0.2 * temperature)^1.514), 3)
 }
 
 wb_a <- function(i){
   #0.49239 + (1.7912 * (10^-2) * (sum(i))) - (7.7 * (10^-5) * ((sum(i))^2)) + (6.75 * (10^-7) * ((sum(i))^3))
-  0.49 + 0.018 * i - 7.7 * (10^-5) * (i^2) + 6.75 * (10^-7) * (i^3)
+  round(0.49 + 0.018 * i - 7.7 * (10^-5) * (i^2) + 6.75 * (10^-7) * (i^3), 3)
 }
 
 n_days <- function(x) {

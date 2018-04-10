@@ -6,9 +6,40 @@ library(ggplot2)
 library(forestr)
 data("weather")
 
-fill_reg(weather,id, date, lon, lat, rh_min) %>%
-  filter(is.na(t_min))
+.data = weather
+id = quo(id)
+key = quo(date)
+lon = quo(lon)
+lat = quo(lat)
+value = quo(rh_min)
+min_coverage = 80
+max_iter = 10
+min_r2 = 0.8
 
+.data <- readRDS("data-raw/base_dia.RDS")
+id = quo(nome)
+key = quo(data)
+lon = quo(lon)
+lat = quo(lat)
+value = quo(t_min)
+min_coverage = 80
+max_iter = 10
+min_r2 = 0.8
+
+
+
+fill_reg(weather, id, date, lon, lat, rh_min, min_r2 = 0.1) %>%
+  filter(is.na(rh_min))
+
+
+readRDS("data-raw/base_dia.RDS") %>%
+  fill_reg(nome, data, lon, lat, t_min, min_r2 = 0.1)
+
+
+weather %>%
+  filter(is.na(rh_min)) %>%
+  pull(id) %>%
+  unique()
 
 weather %>%
   group_by(id, city) %>%

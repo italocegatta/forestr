@@ -4,8 +4,8 @@
 \alias{fill_reg}
 \title{Fill gap with linear regression}
 \usage{
-fill_reg(.data, id, key, lon, lat, value, min_coverage = 80, max_iter = 10,
-  min_r2 = 0.8)
+fill_reg(.data, id, key, lon, lat, value, prop_missing = 50,
+  min_coverage = 80, max_iter = 10, min_r2 = 0.8)
 }
 \description{
 Fill gap with linear regression

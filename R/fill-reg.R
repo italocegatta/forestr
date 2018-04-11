@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-fill_reg <- function(.data, id, key, lon, lat, value, min_coverage = 80, max_iter = 10, min_r2 = 0.8) {
+fill_reg <- function(.data, id, key, lon, lat, value, prop_missing = 50, min_coverage = 80, max_iter = 10, min_r2 = 0.8) {
 
   id <- dplyr::enquo(id)
   key <- dplyr::enquo(key)
@@ -26,9 +26,10 @@ fill_reg <- function(.data, id, key, lon, lat, value, min_coverage = 80, max_ite
 
     prop_miss_i <- prop_miss(df_i, !!value)
     # calc the proportion between missing and filled values
-    if (prop_miss_i > 50) {
+    if (prop_miss_i > prop_missing) {
       # message or stop?
       message(glue::glue("id: {list_id_miss[i]}, missing {round(prop_miss_i, 2)}%"))
+      next()
     }
 
     # get nearst id

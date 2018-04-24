@@ -1,4 +1,5 @@
 #' Calculate Potential Evapotranspiration using Thornthwaite method
+#'
 #' @export
 etp <- function(date, t_med, lat, i = NULL, a = NULL) {
 

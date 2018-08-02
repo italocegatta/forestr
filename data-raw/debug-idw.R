@@ -16,7 +16,8 @@ lon = dplyr::quo(lon)
 lat = dplyr::quo(lat)
 value = dplyr::quo(prec)
 id = dplyr::quo(id)
-radius = 200
+radius = 300
+neighbors = 30
 
 data_i = df_i
 data_nxt = df_nxt
